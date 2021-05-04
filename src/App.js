@@ -1,32 +1,50 @@
-// import logo from './logo.svg';
 import './App.css';
-require('dotenv').config()
+import Navbar from './component/Navbar'
+import Login from './page/user/auth/Login'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { Row, Card, Col } from 'react-bootstrap';
+
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+
+// require('dotenv').config()
 
 function App() {
-    const title = 'Bonku - Catat Hutang, Tagih Galak'
-  return (
-    <div className="App">
-        <div className="content">
-            <h1> { title } </h1>
-        </div>
-        {/* <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>
-            Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            >
-            Learn React
-            </a>
-        </header> */}
-
-
-    </div>
-  );
+    return (
+        <Router>
+            <div className="App">
+                <Switch>
+                    <Route path="/">
+                        <Row>
+                            <Col className="bg-wheat vh-100">
+                                <div className="row align-items-center h-100">
+                                    <div className="col-6 mx-auto">
+                                        <Navbar></Navbar>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col className="bg-info h-auto">
+                                <div className="container h-100">
+                                    <div className="row align-items-center h-100">
+                                        <div className="col-6 mx-auto">
+                                            <Card style={{ width: '18rem' }}>
+                                                <Card.Body>
+                                                <Login></Login>
+                                                </Card.Body>
+                                            </Card>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Route>
+                    <Route path="/register">
+                        register
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;

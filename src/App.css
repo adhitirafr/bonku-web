@@ -1,4 +1,12 @@
-.App {
+.bg-wheat {
+    background-color: wheat;
+}
+
+/* .App {
+    text-align: center;
+} */
+
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +43,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
