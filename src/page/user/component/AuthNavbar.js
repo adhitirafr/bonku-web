@@ -1,30 +1,26 @@
-import { Col, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+import { Navbar } from 'react-bootstrap';
+import logo from '../../../logo.svg'; // with import
 
 const AuthNavbar = () => {
     return (
-        <div>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-                <Link className="navbar-brand" to="/">
-                    Bonku
-                </Link>
-
-                <Button className="navbar-toggler" data-toggle="collapse" data-target="#navbarNavAltMarkup" type="button"  aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </Button>
-
-                <Col className="collapse navbar-collapse">
-                    <ul className="navbar-nav mr-auto">
-                        <li className="nav-item active">
-                            <Link className="nav-link" to="/"> Home <span class="sr-only">(current)</span> </Link>
-                        </li>
-                        <li class="nav-item">
-                        <Link className="nav-link" to="/"> Logout </Link>
-                        </li>
-                    </ul>
-                </Col>
-            </nav>
-        </div>
+        <Navbar>
+            <Navbar.Brand href="#home">
+                <img
+                    alt="logo"
+                    src={logo}
+                    width="30"
+                    height="30"
+                    className="d-inline-block align-top"
+                />{' '}
+                Bonku
+            </Navbar.Brand>
+            <Navbar.Toggle />
+            <Navbar.Collapse className="justify-content-end">
+                <Navbar.Text>
+                Signed in as: <a href="#login">Mark Otto</a>
+                </Navbar.Text>
+            </Navbar.Collapse>
+        </Navbar>
     )
 }
 

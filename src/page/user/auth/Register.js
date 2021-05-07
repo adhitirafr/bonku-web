@@ -17,7 +17,9 @@ const Register = () => {
         const newUser = { name, email, password };
         console.log(newUser)
 
-        axios.post('http://127.0.0.1:8000/api/register', {
+        console.log(process.env.REACT_APP_API_BASE);
+
+        axios.post(`${process.env.REACT_APP_API_BASE}/api/register`, {
             'name': name,
             'email': email,
             'password': password

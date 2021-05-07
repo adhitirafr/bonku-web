@@ -2,6 +2,25 @@
     background-color: wheat;
 }
 
+.bg-theme {
+  background-color: #3DBA60;
+}
+
+.font-size-30 {
+  font-size: 30px;
+}
+
+.b-radius-20 {
+  border-radius: 20%;
+}
+
+.font-size-11 {
+  font-size: 11px;
+}
+
+.a:hover {
+  text-decoration: none!important;
+}
 /* .App {
     text-align: center;
 } */

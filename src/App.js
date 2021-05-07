@@ -9,7 +9,7 @@ import Register from './page/user/auth/Register'
 import Dashboard from './page/user/general/Dashboard'
 import DeptorCreate from './page/user/general/Deptor/Create'
 
-// require('dotenv').config()
+require('dotenv').config()
 
 function App() {
     return (

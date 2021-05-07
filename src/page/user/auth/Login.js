@@ -1,8 +1,12 @@
 import Navbar from '../component/Navbar'
 import {  Row, Card, Col, Button, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
+import { useState } from 'react';
 
 const Login = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
     return (
         <div>
             <Row>
@@ -21,11 +25,24 @@ const Login = () => {
                                     <Card.Body>
                                         <Form>
                                             <Form.Group controlId="email">
-                                                <Form.Control type="email" name="email" placeholder="Email" />
-                                            </Form.Group>
+                                                <Form.Control 
+                                                    type="email" 
+                                                    name="email" 
+                                                    placeholder="Email"
+                                                    autoComplete="off"
+                                                    required
+                                                    onChange={ (e) => setEmail(e.target.value) } 
+                                                    value={email}        
+                                            /></Form.Group>
                                             <Form.Group controlId="password">
-                                                <Form.Control type="password" name="password" placeholder="password" />
-                                            </Form.Group>
+                                                <Form.Control 
+                                                    type="password" 
+                                                    name="password" 
+                                                    placeholder="password"
+                                                    required
+                                                    onChange={ (e) => setPassword(e.target.value) }
+                                                    value={password}
+                                            /></Form.Group>
                                             <Form.Group className="text-center" controlId="exampleForm.ControlInput1">
                                                 <div>Belum punya akun?
                                                     <Link to="/register">Daftar</Link>
