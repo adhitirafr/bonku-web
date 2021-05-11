@@ -14,11 +14,6 @@ const Register = () => {
     const submitRegister = (e) => {
         e.preventDefault()
 
-        const newUser = { name, email, password };
-        console.log(newUser)
-
-        console.log(process.env.REACT_APP_API_BASE);
-
         axios.post(`${process.env.REACT_APP_API_BASE}/api/register`, {
             'name': name,
             'email': email,

@@ -6,8 +6,16 @@
   background-color: #3DBA60;
 }
 
+.bg-gray-100 {
+  background-color: #f5f5f5;
+}
+
 .font-size-30 {
   font-size: 30px;
+}
+
+.b-radius-10 {
+  border-radius: 10px;
 }
 
 .b-radius-20 {
