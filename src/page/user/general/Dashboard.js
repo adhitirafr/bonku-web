@@ -1,9 +1,19 @@
 import {  Container, Card, Button, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { decrement, increment } from '../../../redux/counter'
 
 import AuthNavbar from '../component/AuthNavbar'
 
 const Dashboard = () => {
+
+    //-- other wrinting
+    // const count = useSelector((state) => state.counter.count)
+
+    const { count } = useSelector( (state) => state.counter )
+
+    const dispatch = useDispatch();
+
     return (
         <div>
             <AuthNavbar></AuthNavbar>
@@ -14,6 +24,7 @@ const Dashboard = () => {
                 <div className="col-md-8 bg-wheat">
                     
                     <Container fluid className="mt-3">
+                        
                         <Button className="mb-3">
                             <Link to="/user/deptor/create" className="text-white">+ Tambah Orang yang menghutang</Link>
                         </Button>
@@ -36,7 +47,13 @@ const Dashboard = () => {
                             </Col>
                             <Col>
                                 <Card className="p-2">
-                                    test
+                                    test : {count}
+                                    <div>
+                                        <button onClick={() => dispatch(increment())}> tambah </button>
+                                    </div>
+                                    <div>
+                                        <button onClick={() => dispatch(decrement())}> tambah </button>
+                                    </div>
                                 </Card>
                             </Col>
                             

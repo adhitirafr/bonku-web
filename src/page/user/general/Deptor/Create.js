@@ -18,7 +18,12 @@ const Create = () => {
         e.preventDefault();
 
         axios.post(`${process.env.REACT_APP_API_BASE}/api/deptor`, {
-
+            'name': name,
+            'email': email,
+            'phone_number': number,
+            'identity': identity,
+            'address': address,
+            'note': note
         })
         .then(res => {
 
@@ -37,7 +42,7 @@ const Create = () => {
             </div>
             <div className="col-md-8 bg-wheat">  
                 <Container fluid className="mt-3">
-                    <Form className="bg-gray-100 p-2 b-radius-10">
+                    <Form className="bg-gray-100 p-2 b-radius-10" onSubmit={handleCreate}>
                         <Form.Group>
                             <Form.Label>Nama</Form.Label>
                             <Form.Control
