@@ -1,15 +1,25 @@
 import Navbar from '../component/Navbar'
 import {  Row, Card, Col, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useState } from 'react'
+
+import { useDispatch } from 'react-redux';
+import { setAuthToken } from '../../../redux/userAuth'
 
 import axios from 'axios';
 
+axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.common['Accept'] = 'application/json';
+
 const Register = () => {
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const dispatch = useDispatch();
+
+    const history = useHistory();
     
     const submitRegister = (e) => {
         e.preventDefault()
@@ -18,14 +28,18 @@ const Register = () => {
             'name': name,
             'email': email,
             'password': password
+        }, {
+            header: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'accept': 'application/json'
+            }
         })
         .then(res => {
-            console.log('berhasil')
-            console.log(res.data)
+            dispatch(setAuthToken(res.data.access_token))
+            history.push('/user/dashboard')
         })
         .catch(err => {
-            console.log('gagal')
-            console.error(err.response)
+            console.error(err.response.data.message)
         })
     }
 

@@ -1,67 +1,92 @@
 import {  Container, Card, Button, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux';
-import { decrement, increment } from '../../../redux/counter'
+import { useSelector } from 'react-redux';
 
-import AuthNavbar from '../component/AuthNavbar'
+import AuthNavbar from './component/AuthNavbar'
+
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const Dashboard = () => {
 
-    //-- other wrinting
-    // const count = useSelector((state) => state.counter.count)
+    const [depts, setDepts] = useState({})
 
-    const { count } = useSelector( (state) => state.counter )
+    const { token } = useSelector( (state) => state.user )
 
-    const dispatch = useDispatch();
+    //-- Fungsi untuk mengambil daftar hutang.
+
+    const getDepts = () => {
+        axios.get(`${process.env.REACT_APP_API_BASE}/api/dept`, {
+            headers: { Authorization: `Bearer ${token}` } 
+        })
+        .then(res => {
+            console.log('depts')
+            console.log(res.data.data)
+            setDepts(res.data.data)
+        })
+        .catch(err => {
+            console.log(err.response.data.message)            
+        })
+    }
+
+    //-- Fungsi untuk mengambil daftar orang yang menghutang
+
+    useEffect(() => {
+        getDepts()
+    }, []);
 
     return (
-        <div>
+        <Col>
             <AuthNavbar></AuthNavbar>
             <Row>
-                <div className="col-md-4 bg-dark vh-100">
-                    
-                </div>
-                <div className="col-md-8 bg-wheat">
-                    
+                <Col className="col-md-4 bg-dark vh-100"></Col>
+                <Col className="col-md-8 bg-wheat">
+
+                <Col className="display-4 mt-3">Dashboard</Col>
                     <Container fluid className="mt-3">
                         
                         <Button className="mb-3">
-                            <Link to="/user/deptor/create" className="text-white">+ Tambah Orang yang menghutang</Link>
+                            <Link to="/user/deptor" className="text-white">Penghutang</Link>
                         </Button>
+
+                        <Button className="mb-3">
+                            <Link to="/user/dept/create" className="text-white">Hutang Baru</Link>
+                        </Button>
+
+                        {/** Bila hutang belum ada, tampilkan */}
                         
-                        <Row>
-                            <Col>
-                                <Link to="/" className="text-dark">
-                                    <Card className="b-radius-20" >
-                                        <div className="vh-2 bg-info display-block text-info">e</div>
-                                        <div className="p-2 text-center">
-                                            <Col className="lead mb-3">Adit Filkom</Col>
-                                            <Col className="mb-4 font-size-30">Rp. 310.000</Col>
-                                            <Col>
-                                                <Col className="text-muted font-size-11">Batas waktu</Col>
-                                                <Col>Senin, 18 April 2020</Col>
+                        {depts.length === 0 && 
+                            <Row>
+                                <Col>Hore! kamu belum dihutangi.</Col>
+                            </Row>
+                        }
+
+                        {/* Tampilkan daftar penghutang bila ada */}
+                        
+                        {depts.length > 0 && 
+                            <Row>
+                                <Col>
+                                    <Link to="/user/dashboard" className="text-dark">
+                                        <Card className="b-radius-20" >
+                                            <Col className="p-2 text-center">
+                                                <Col className="lead mb-3">Adit Filkom</Col>
+                                                <Col className="mb-4 font-size-30">Rp. 310.000</Col>
+                                                <Col>
+                                                    <Col className="text-muted font-size-11">Batas waktu</Col>
+                                                    <Col>Senin, 18 April 2020</Col>
+                                                </Col>
                                             </Col>
-                                        </div>
-                                    </Card>
-                                </Link>
-                            </Col>
-                            <Col>
-                                <Card className="p-2">
-                                    test : {count}
-                                    <div>
-                                        <button onClick={() => dispatch(increment())}> tambah </button>
-                                    </div>
-                                    <div>
-                                        <button onClick={() => dispatch(decrement())}> tambah </button>
-                                    </div>
-                                </Card>
-                            </Col>
-                            
-                        </Row>
+                                        </Card>
+                                    </Link>
+                                </Col>                                
+                            </Row>
+                        }
+
+                        <Link></Link>
                     </Container>
-                </div>
+                </Col>
             </Row>
-        </div>
+        </Col>
     );
 }
 

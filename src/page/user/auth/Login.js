@@ -1,29 +1,68 @@
 import Navbar from '../component/Navbar'
-import {  Row, Card, Col, Button, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+import {  Row, Card, Col, Form, Alert, Button } from 'react-bootstrap';
+import { Link, useHistory } from 'react-router-dom'
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setAuthToken } from '../../../redux/userAuth'
+
+import axios from 'axios';
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showError, setShowError] = useState(false)
+    const [messageError, setMessageError] = useState('')
+
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        axios.post(`${process.env.REACT_APP_API_BASE}/api/login`, {
+            'email': email,
+            'password': password
+        }, {
+            header: {
+                'content-type':  'application/x-www-form-urlencoded',
+                'accept': 'application/json'
+            }
+        })
+        .then(res => {
+            dispatch(setAuthToken(res.data.access_token))
+            history.push('/user/dashboard');
+        })
+        .catch(err => {
+            setMessageError(err.response.data.message)
+            setShow(true)
+        })
+    }
+
+    const setShow = (condtion) => {
+        setShowError(condtion)
+    }
 
     return (
-        <div>
+        <Col>
             <Row>
                 <Col className="bg-wheat vh-100">
-                    <div className="row align-items-center h-100">
-                        <div className="col-6 mx-auto">
+                    <Col className="row align-items-center h-100">
+                        <Col className="col-6 mx-auto">
                             <Navbar></Navbar>
-                        </div>
-                    </div>
+                        </Col>
+                    </Col>
                 </Col>
                 <Col className="bg-info h-auto">
-                    <div className="container h-100">
-                        <div className="row align-items-center h-100">
-                            <div className="col-6 mx-auto">
+                    <Col className="container h-100">
+                        <Col className="row align-items-center h-100">
+                            <Col className="col-6 mx-auto">
                                 <Card style={{ width: '18rem' }}>
                                     <Card.Body>
-                                        <Form>
+                                        <Col className="text-center font-size-30 mb-10">Login</Col>
+                                        
+                                        {showError && <Alert variant="warning" onClose={() => setShow(false)} dismissible> { messageError } </Alert>  }
+
+                                        <Form onSubmit={handleLogin}>
                                             <Form.Group controlId="email">
                                                 <Form.Control 
                                                     type="email" 
@@ -44,22 +83,22 @@ const Login = () => {
                                                     value={password}
                                             /></Form.Group>
                                             <Form.Group className="text-center" controlId="exampleForm.ControlInput1">
-                                                <div>Belum punya akun?
+                                                <Col>Belum punya akun?
                                                     <Link to="/register">Daftar</Link>
-                                                </div>
+                                                </Col>
                                             </Form.Group>
-                                            <Form.Group className="text-center" controlId="exampleForm.ControlInput1">
-                                                <Button variant="success">Login</Button>
-                                            </Form.Group>
+                                            <Col className="text-center">
+                                                <Button variant="success" type="submit">Masuk</Button>
+                                            </Col>
                                         </Form>
                                     </Card.Body>
                                 </Card>
-                            </div>
-                        </div>
-                    </div>
+                            </Col>
+                        </Col>
+                    </Col>
                 </Col>
             </Row>
-        </div>
+        </Col>
     );
 }
 

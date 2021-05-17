@@ -7,7 +7,9 @@ import Login from './page/user/auth/Login'
 import Register from './page/user/auth/Register'
 
 import Dashboard from './page/user/general/Dashboard'
-import DeptorCreate from './page/user/general/Deptor/Create'
+import DeptorList from './page/user/general/Deptor/Index'
+import DeptorForm from './page/user/general/Deptor/Form'
+import DeptForm from './page/user/general/Dept/Form'
 
 require('dotenv').config()
 
@@ -16,18 +18,13 @@ function App() {
         <Router>
             <div className="App">
                 <Switch>
-                    <Route exact path="/">
-                        <Login></Login>
-                    </Route>
-                    <Route path="/register">
-                        <Register></Register>
-                    </Route>
-                    <Route path="/user/dashboard">
-                        <Dashboard></Dashboard>
-                    </Route>
-                    <Route path="/user/deptor/create">
-                        <DeptorCreate></DeptorCreate>
-                    </Route>
+                    <Route exact path="/" component={Login}></Route>
+                    <Route exact path="/register" component={Register} ></Route>
+                    <Route exact path="/user/dashboard" component={Dashboard}></Route>
+                    <Route exact path="/user/deptor" component={DeptorList}></Route>
+                    <Route exact path="/user/deptor/create" component={DeptorForm}></Route>
+                    <Route exact path="/user/deptor/:id" component={DeptorForm}></Route>
+                    <Route exact path="/user/dept/create" component={DeptForm}></Route>
                 </Switch>
             </div>
         </Router>

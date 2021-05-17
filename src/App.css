@@ -1,5 +1,5 @@
 .bg-wheat {
-    background-color: wheat;
+    background-color: rgb(255, 243, 224);
 }
 
 .bg-theme {
@@ -24,6 +24,10 @@
 
 .font-size-11 {
   font-size: 11px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
 }
 
 .a:hover {
