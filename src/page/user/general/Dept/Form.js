@@ -67,7 +67,7 @@ const Create = (props) => {
         })
         .then(res => {
             console.log('berhasil')
-            history.push(`user/dashboard`)
+            history.push(`/user/dashboard`)
         })
         .catch(err => {
             console.log(err.response)
@@ -82,13 +82,15 @@ const Create = (props) => {
         <Col>
             <AuthNavbar></AuthNavbar>
             <Row>
-                <Col className="col-md-4 bg-dark vh-100"></Col>
+                <Col className="col-md-4 bg-dark vh-50"></Col>
                 <Col className="col-md-8 bg-wheat"> 
 
                     <Col className="display-4 mt-3">
                         {dataId === '' ? 'Tambah' : 'Edit'} Hutang
                     </Col>
                     <Container fluid className="mt-3">
+                        { dataDeptor.length > 0 ?
+                        
                         <Form onSubmit={handleCreate}>
                             <Form.Group>
                                 <Form.Label>Penghutang</Form.Label>
@@ -160,7 +162,12 @@ const Create = (props) => {
                             { isPending && 
                                 <Button variant="warning" disabled>Sedang memproses...</Button> 
                             }
-                        </Form>
+                        </Form> 
+                        
+                        : 
+
+                        <Col>Penghutang belum ada</Col>
+                        }
                     </Container>
                 </Col>
             </Row>

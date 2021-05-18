@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {  Container, Row, Col, Table, Button, ButtonGroup, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom';
 import AuthNavbar from '../component/AuthNavbar'
 
@@ -100,38 +99,46 @@ const ListDeptor = () => {
                     <Col className="display-4 mt-3">Daftar Penghutang</Col>
                     
                     <Container fluid className="mt-3">
-                    <Button className="mb-3">
-                        <Link to="/user/deptor/create" className="text-white">Tambah</Link>
+                    <Button href="/user/deptor/create" className="mb-3">
+                        Tambah
                     </Button>
-                        <Table bordered hover>
-                        <thead>
-                            <tr>
-                            <th>#</th>
-                            <th>Nama</th>
-                            <th>Total Hutang</th>
-                            <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {deptors.map((deptor, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{deptor.name}</td>
-                                    <td>{deptor.total_dept}</td>
-                                    <td>
-                                    <ButtonGroup vertical>
-                                        <DropdownButton as={ButtonGroup} title="Dropdown" id="bg-vertical-dropdown-3">
-                                            <Dropdown.Item eventKey="1" onClick={() => showDeptor(deptor.id)}>Detail</Dropdown.Item>
-                                            <Dropdown.Item eventKey="2" onClick={ () => showEdit(deptor.id) }>Edit</Dropdown.Item>
-                                            <Dropdown.Item eventKey="3" onClick={ () => deletePreparation(deptor) } >Hapus</Dropdown.Item>
-                                        </DropdownButton>
-                                    </ButtonGroup>
-                                    </td>
-                                </tr>
-                            ))}
-                            
-                        </tbody>
-                        </Table>
+                        {
+                            deptors.length > 0 && 
+                            <Table bordered hover>
+                                <thead>
+                                    <tr>
+                                    <th>#</th>
+                                    <th>Nama</th>
+                                    <th>Total Hutang</th>
+                                    <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {deptors.map((deptor, index) => (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{deptor.name}</td>
+                                            <td>{deptor.total_dept}</td>
+                                            <td>
+                                            <ButtonGroup vertical>
+                                                <DropdownButton as={ButtonGroup} title="Aksi" id="bg-vertical-dropdown-3">
+                                                    <Dropdown.Item eventKey="1" onClick={() => showDeptor(deptor.id)}>Detail</Dropdown.Item>
+                                                    <Dropdown.Item eventKey="2" onClick={ () => showEdit(deptor.id) }>Edit</Dropdown.Item>
+                                                    <Dropdown.Item eventKey="3" onClick={ () => deletePreparation(deptor) } >Hapus</Dropdown.Item>
+                                                </DropdownButton>
+                                            </ButtonGroup>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        }
+
+                        {
+                            deptors.length == 0 &&
+                            <Row><Col>Belum ada penghutang</Col></Row>
+                        }
+                        
                     </Container>
                 </Col>
             </Row>
@@ -143,12 +150,30 @@ const ListDeptor = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Col> Nama : {deptorData.name}</Col>
-                    <Col> Nomor Telepon : {deptorData.phone_number} </Col>
-                    <Col> Identitas : {deptorData.identity} </Col>
-                    <Col> Alamat : {deptorData.address} </Col>
-                    <Col> Catatan : </Col>
-                    <Col> {deptorData.note} </Col>
+                    <Col className="mb-10">
+                        <Col className="text-secondary"> Nama </Col>
+                        <Col> {deptorData.name} </Col>
+                    </Col>
+
+                    <Col className="mb-10">
+                        <Col className="text-secondary">Nomor Telepon</Col>
+                        <Col> {deptorData.phone_number ? deptorData.phone_number : '-'} </Col>
+                    </Col>
+
+                    <Col className="mb-10">
+                        <Col className="text-secondary">Identitas</Col>
+                        <Col> {deptorData.identity ? deptorData.identity : '-'} </Col>
+                    </Col>
+
+                    <Col className="mb-10">
+                        <Col className="text-secondary">Alamat</Col>
+                        <Col> {deptorData.address ? deptorData.address : '-'} </Col>
+                    </Col>
+                    
+                    <Col className="mb-10">
+                        <Col className="text-secondary">Catatan</Col>
+                        <Col> {deptorData.note ? deptorData.note : '-'} </Col> 
+                    </Col>
                 </Modal.Body>
             </Modal>
 

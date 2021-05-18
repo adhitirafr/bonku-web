@@ -15,17 +15,7 @@ const AuthNavbar = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    //-- Fungsi untuk ambil info user berdasarkan token yang disimpan
-    const getUser = () => {
-        axios.get(`${process.env.REACT_APP_API_BASE}/api/profile`, {
-            headers: { Authorization: `Bearer ${token}` } 
-        }).then(res => {
-            setUser(res.data);
-        })
-        .catch(err => {
-            console.log(err.response)
-        })
-    }
+    
 
     //-- Fungsi untuk menghapus token yang tersimpan, lalu redirect ke halaman login
     const handleLogOut = (e) => {
@@ -38,6 +28,18 @@ const AuthNavbar = () => {
     // Bila [] tidak dipanggil, maka fungsi di use effect akan terpanggil terus menerus.
 
     useEffect(() => {
+        //-- Fungsi untuk ambil info user berdasarkan token yang disimpan
+        const getUser = () => {
+            axios.get(`${process.env.REACT_APP_API_BASE}/api/profile`, {
+                headers: { Authorization: `Bearer ${token}` } 
+            }).then(res => {
+                setUser(res.data);
+            })
+            .catch(err => {
+                console.log(err.response)
+            })
+        }
+
         getUser();
     }, []);
 
