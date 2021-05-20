@@ -1,40 +1,82 @@
-import {  Container, Card, Button, Row, Col } from 'react-bootstrap';
+import {  Container, Card, Button, Row, Col, Modal, Alert } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 import AuthNavbar from './component/AuthNavbar'
 
-import axios from 'axios';
+import axios from "axios";
 import { useEffect, useState } from 'react';
 
 const Dashboard = () => {
 
-    const [depts, setDepts] = useState({})
+    const [depts, setDepts] = useState({});
 
-    const { token } = useSelector( (state) => state.user )
+    const [showModal, setShowModal] = useState(false);
 
-    //-- Fungsi untuk mengambil daftar orang yang menghutang
+    const [pickData, setPickData] = useState({});
+
+    const [message, setMessage] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+
+    const { token } = useSelector( (state) => state.user );
 
     useEffect(() => {
+        const source = axios.CancelToken.source();
+        
         //-- Fungsi untuk mengambil daftar hutang.
-
-        const getDepts = () => {
-            axios.get(`${process.env.REACT_APP_API_BASE}/api/dept`, {
-                headers: { Authorization: `Bearer ${token}` } 
-            })
-            .then(res => {
-                console.log(res.data.data)
-                setDepts(res.data.data[0])
-            })
-            .catch(err => {
-                console.log(err.response)  
-            })
+        
+        const getDepts = async () => {
+            try {
+                await axios.get(`${process.env.REACT_APP_API_BASE}/api/dept`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    cancelToken: source.token,
+                })
+                .then(res => {
+                    if(res.data.data.length !== 0) {
+                        setDepts(res.data.data[0])
+                    } else setDepts(res.data.data)
+                })
+            } catch (error) {
+                if (axios.isCancel(error)) { } 
+                else {
+                    throw error
+                }
+            }
         }
 
-        getDepts()
-    }, []);
+        getDepts();
+
+        return function () {
+            source.cancel("Cancelling in cleanup");
+        };
+    }, [token]);
+
+    const pickDeptData = (data) => {
+        setPickData(data)
+        setShowModal(true)
+    }
+
+    const handleFinish = () => {
+        axios.get(`${process.env.REACT_APP_API_BASE}/api/dept/finish/${pickData.id}`, {
+            headers: { Authorization: `Bearer ${token}` } 
+        })
+        .then(res => {
+            setMessage(res.data.message)
+        })
+        .catch(err => {
+            setMessage('Hutang gagal diselesaikan')
+        })
+        .finally(() => {
+            setShowAlert(true)
+            setShowModal(false)
+
+            setTimeout(() => {
+                setShowAlert(false)
+            }, 1500)
+        })
+    }
 
     return (
-        <Col>
+        <>
             <AuthNavbar></AuthNavbar>
             <Row>
                 <Col className="col-md-4 bg-dark vh-100"></Col>
@@ -49,6 +91,8 @@ const Dashboard = () => {
                                 <Button href="/user/dept/create"> Hutang Baru </Button> {' '}
                             </Col>
                         </Row>
+
+                        {showAlert && <Alert variant="dark" onClose={() => setShowAlert(false)} dismissible> { message } </Alert>  }
 
                         {/** Bila hutang belum ada, tampilkan */}
                         
@@ -77,8 +121,8 @@ const Dashboard = () => {
                                                     </Col>
                                                 }
                                             </Col>
-                                            <Col className="text-center"> 
-                                                <img width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> 
+                                            <Col className="text-center">
+                                                <img alt="check" onClick={ () => pickDeptData(dept) } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> 
                                             </Col>
                                         </Card>
                                     </Col>
@@ -91,7 +135,22 @@ const Dashboard = () => {
                     </Container>
                 </Col>
             </Row>
-        </Col>
+
+            <Modal centered show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Hutang sudah dibayar?
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Col className="mb-10">Apakah hutang ini sudah dibayar?</Col>
+                   
+                    <Col className="float-right">
+                        <Button onClick={ () => handleFinish() }>Ya</Button>
+                    </Col>
+                </Modal.Body>
+            </Modal>
+        </>
     );
 }
 

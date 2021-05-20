@@ -15,8 +15,6 @@ const AuthNavbar = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    
-
     //-- Fungsi untuk menghapus token yang tersimpan, lalu redirect ke halaman login
     const handleLogOut = (e) => {
         dispatch(removeAuthToken());
@@ -28,20 +26,35 @@ const AuthNavbar = () => {
     // Bila [] tidak dipanggil, maka fungsi di use effect akan terpanggil terus menerus.
 
     useEffect(() => {
+        const source = axios.CancelToken.source();
+
         //-- Fungsi untuk ambil info user berdasarkan token yang disimpan
-        const getUser = () => {
-            axios.get(`${process.env.REACT_APP_API_BASE}/api/profile`, {
-                headers: { Authorization: `Bearer ${token}` } 
-            }).then(res => {
-                setUser(res.data);
-            })
-            .catch(err => {
-                console.log(err.response)
-            })
+        const getUser = async () => {
+            try {
+                await axios.get(`${process.env.REACT_APP_API_BASE}/api/profile`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    cancelToken: source.token,
+                }).then(res => {
+                    setUser(res.data);
+                })
+                .catch(err => {
+                    console.log(err.response)
+                })
+            }
+            catch(error) {
+                if (axios.isCancel(error)) { } 
+                else {
+                    throw error
+                }
+            }
         }
 
         getUser();
-    }, []);
+
+        return function () {
+            source.cancel("Cancelling in cleanup");
+        };
+    }, [token]);
 
     return (
         <Navbar>
@@ -58,7 +71,7 @@ const AuthNavbar = () => {
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
                 <Navbar.Text>
-                    Masuk sebagai: {user.name} | <a onClick={handleLogOut}>Log out</a>
+                    Masuk sebagai: {user.name} | <div onClick={ handleLogOut }>Log out</div>
                 </Navbar.Text>
             </Navbar.Collapse>
         </Navbar>

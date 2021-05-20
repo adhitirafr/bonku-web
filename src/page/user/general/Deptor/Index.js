@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import {  Container, Row, Col, Table, Button, ButtonGroup, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Container, Row, Col, Table, Button, ButtonGroup, Dropdown, DropdownButton, Modal } from 'react-bootstrap';
 import AuthNavbar from '../component/AuthNavbar'
 
 const ListDeptor = () => {
@@ -18,21 +18,20 @@ const ListDeptor = () => {
 
     const history = useHistory();
 
-    const getDeptors = () => {
-        console.log('get deptor called')
-        axios.get(`${process.env.REACT_APP_API_BASE}/api/deptor`, {
-            headers: { 
-                Authorization: `Bearer ${token}`,
-            } 
-        })
-        .then(res => {
-            setDeptors(res.data.data)
-        })
-        .catch(err => {
-            console.log('error')
-            console.log(err.response)
-        })
-    }
+    // const getDeptors = () => {
+    //     axios.get(`${process.env.REACT_APP_API_BASE}/api/deptor`, {
+    //         headers: { 
+    //             Authorization: `Bearer ${token}`,
+    //         } 
+    //     })
+    //     .then(res => {
+    //         setDeptors(res.data.data)
+    //     })
+    //     .catch(err => {
+    //         console.log('error')
+    //         console.log(err.response)
+    //     })
+    // }
 
     const showDeptor = (id) => {
         axios.get(`${process.env.REACT_APP_API_BASE}/api/deptor/${id}`, {
@@ -41,7 +40,6 @@ const ListDeptor = () => {
             }
         })
         .then(res => {
-            console.log(res.data.data)
             setDeptorData(res.data.data)
             setShowModal(true);
         }).catch(err => {
@@ -77,7 +75,7 @@ const ListDeptor = () => {
         })
         .finally(() => {
             showDeleteModal(false)
-            getDeptors()
+            // getDeptors()
         })
     }
 
@@ -86,8 +84,36 @@ const ListDeptor = () => {
     }
 
     useEffect(() => {
-        getDeptors()
-    }, [])
+        const source = axios.CancelToken.source();
+
+        const getDeptorAPI = async () => {
+            try {
+                await axios.get(`${process.env.REACT_APP_API_BASE}/api/deptor`, {
+                    headers: { Authorization: `Bearer ${token}` } ,
+                    cancelToken: source.token,
+                })
+                .then(res => {
+                    setDeptors(res.data.data)
+                })
+                .catch(err => {
+                    console.log('error')
+                    console.log(err.response)
+                })
+            }
+            catch(error) {
+                if (axios.isCancel(error)) { } 
+                else {
+                    throw error
+                }
+            }
+        }
+
+        getDeptorAPI()
+
+        return function () {
+            source.cancel("Cancelling in cleanup");
+        };
+    }, [token])
 
     return(
         <Col>
@@ -135,7 +161,7 @@ const ListDeptor = () => {
                         }
 
                         {
-                            deptors.length == 0 &&
+                            deptors.length === 0 &&
                             <Row><Col>Belum ada penghutang</Col></Row>
                         }
                         
@@ -186,8 +212,8 @@ const ListDeptor = () => {
                 <Modal.Body>
                     <Col className="mb-10">Yakin ingin menghapus penghutang ini?</Col>
                    
-                    <Col className="float-right">
-                        <Button onClick={ handleDelete }>Hapus</Button>
+                    <Col className="d-flex flex-row-reverse">
+                        <Button variant="danger" onClick={ handleDelete }>Hapus</Button>
                     </Col>
                 </Modal.Body>
             </Modal>

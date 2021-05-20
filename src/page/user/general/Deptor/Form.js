@@ -30,32 +30,44 @@ const Create = (props) => {
     useEffect(() => {
         if(props.match.params.id) {
             console.log('ada props')
+
+            const source = axios.CancelToken.source();
+
+            const getData = async () => {
+                try {
+                    
+                    setDataId(props.match.params.id)
+
+                    axios.get(`${process.env.REACT_APP_API_BASE}/api/deptor/${props.match.params.id}`, {
+                        headers: { 
+                            Authorization: `Bearer ${token}`,
+                            cancelToken: source.token,
+                        }
+                    })
+                    .then(res => {
+                        console.log(res.data.data)
+
+                        setName(res.data.data.name)
+                        setEmail(res.data.data.email)
+                        setIdentity(res.data.data.identity)
+                        setNote(res.data.data.note)
+                        setAddress(res.data.data.address)
+                        setNumber(res.data.data.phone_number)
+                    }).catch(err => {
+                        console.error(err.response)
+                    })
+                }
+                catch (error) {
+                    if (axios.isCancel(error)) { } 
+                    else {
+                        throw error
+                    }
+                }
+            }
+
             getData()
         }
-    }, [])
-
-    const getData = () => {
-        
-        setDataId(props.match.params.id)
-
-        axios.get(`${process.env.REACT_APP_API_BASE}/api/deptor/${props.match.params.id}`, {
-            headers: { 
-                Authorization: `Bearer ${token}`,
-            }
-        })
-        .then(res => {
-            console.log(res.data.data)
-
-            setName(res.data.data.name)
-            setEmail(res.data.data.email)
-            setIdentity(res.data.data.identity)
-            setNote(res.data.data.note)
-            setAddress(res.data.data.address)
-            setNumber(res.data.data.phone_number)
-        }).catch(err => {
-            console.error(err.response)
-        })
-    }
+    }, [props.match.params.id, token])
 
     const handleEdit = (e) => {
         e.preventDefault()

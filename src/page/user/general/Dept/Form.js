@@ -1,50 +1,61 @@
 import axios from 'axios';
-import { original } from 'immer';
 import { useEffect, useState } from 'react';
-import {  Container, Row, Form, Col, Button, Alert} from 'react-bootstrap';
+import { Container, Row, Form, Col, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import AuthNavbar from '../component/AuthNavbar'
 
 const Create = (props) => {
-    const[original_dept, set_original_dept] = useState('')
-    const[dept_until, set_dept_until] = useState('')
-    const[note, setNote] = useState('')
-    const[interest, setInterest] = useState('')
-    const[isPending, setIsPeding] =  useState(false)
+    const[original_dept, set_original_dept] = useState('');
+    const[dept_until, set_dept_until] = useState('');
+    const[note, setNote] = useState('');
+    const[interest, setInterest] = useState('');
+    const[isPending, setIsPeding] =  useState(false);
 
-    const[dataId, setDataId] = useState('')
+    const[dataDeptor, setDataDeptor] = useState([]);
+    const[deptorSelected, setDeptorSelected] = useState('');
 
-    const[dataDeptor, setDataDeptor] = useState([])
-    const[deptorSelected, setDeptorSelected] = useState('')
-
-    const { token } = useSelector( (state) => state.user )
+    const { token } = useSelector( (state) => state.user );
 
     const history = useHistory();
-
-    const getDeptors = () => {
-        axios.get(`${process.env.REACT_APP_API_BASE}/api/deptor`, {
-            headers: { 
-                Authorization: `Bearer ${token}`,
-            } 
-        })
-        .then(res => {
-            console.log(res.data.data)
-            setDataDeptor(res.data.data)
-        })
-        .catch(err => {
-            console.error('salah')
-        })
-    }
 
     const handleSelect = (e) => {
         setDeptorSelected(e.target.value)
     }
 
     useEffect(() => {
-        getDeptors()
-    }, [])
+        const source = axios.CancelToken.source();
+
+        const getDeptors = async () => {
+            try {
+                await axios.get(`${process.env.REACT_APP_API_BASE}/api/deptor`, {
+                    headers: { 
+                        Authorization: `Bearer ${token}`,
+                        cancelToken: source.token,
+                    } 
+                })
+                .then(res => {
+                    console.log(res.data.data)
+                    setDataDeptor(res.data.data)
+                })
+                .catch(err => {
+                    console.error('salah')
+                })
+            }
+            catch (error) {
+                if (axios.isCancel(error)) { } 
+                else {
+                    throw error
+                }
+            }
+        }
+        getDeptors();
+
+        return function () {
+            source.cancel("Cancelling in cleanup");
+        };
+    }, [token])
 
     //-- Handling Create 
 
@@ -86,7 +97,7 @@ const Create = (props) => {
                 <Col className="col-md-8 bg-wheat"> 
 
                     <Col className="display-4 mt-3">
-                        {dataId === '' ? 'Tambah' : 'Edit'} Hutang
+                        Tambah Hutang
                     </Col>
                     <Container fluid className="mt-3">
                         { dataDeptor.length > 0 ?
