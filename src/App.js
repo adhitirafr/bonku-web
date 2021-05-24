@@ -25,6 +25,7 @@ function App() {
                     <Route exact path="/user/deptor/create" component={DeptorForm}></Route>
                     <Route exact path="/user/deptor/:id" component={DeptorForm}></Route>
                     <Route exact path="/user/dept/create" component={DeptForm}></Route>
+                    <Route exact path="/user/dept/:id" component={DeptForm} />
                 </Switch>
             </div>
         </Router>

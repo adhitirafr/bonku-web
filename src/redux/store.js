@@ -4,11 +4,9 @@ import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import thunk from 'redux-thunk'
 
-import counterReducer from './counter';
 import userauthReducer from './userAuth';
 
 const reducers = combineReducers({
-    counter: counterReducer,
     user: userauthReducer,
 });
 

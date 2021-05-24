@@ -29,8 +29,6 @@ const Create = (props) => {
 
     useEffect(() => {
         if(props.match.params.id) {
-            console.log('ada props')
-
             const source = axios.CancelToken.source();
 
             const getData = async () => {
@@ -69,9 +67,16 @@ const Create = (props) => {
         }
     }, [props.match.params.id, token])
 
-    const handleEdit = (e) => {
-        e.preventDefault()
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
+        setIsPending(true);
+
+        if(dataId === '') handleCreate();
+        else handleEdit();
+    }
+
+    const handleEdit = () => {
         axios.put(`${process.env.REACT_APP_API_BASE}/api/deptor/${props.match.params.id}`, {
             'name': name,
             'email': email,
@@ -100,10 +105,8 @@ const Create = (props) => {
 
     //-- Handling saving deptor
 
-    const handleCreate = (e) => {
-        e.preventDefault();
-
-        setIsPending(true);
+    const handleCreate = () => {
+        
 
         axios.post(`${process.env.REACT_APP_API_BASE}/api/deptor`, {
             'name': name,
@@ -131,10 +134,10 @@ const Create = (props) => {
     }
 
     return (
-        <Col>
+        <>
             <AuthNavbar></AuthNavbar>
-            <Row>
-                <Col className="col-md-4 bg-dark vh-50"></Col>
+            <Row className="vh-100">
+                <Col className="col-md-4 bg-dark"></Col>
                 <Col className="col-md-8 bg-wheat"> 
 
                     <Col className="display-4 mt-3">
@@ -142,79 +145,7 @@ const Create = (props) => {
                     </Col>
                     <Container fluid className="mt-3">
 
-                    {   
-                        !props.match.params.id && 
-                        <Form className="bg-white p-3 b-radius-10" onSubmit={ handleCreate  }>
-                            {showError && <Alert variant="warning" onClose={() => setShowError(false)} dismissible> { messageError } </Alert>  }
-
-                            <Form.Group>
-                                <Form.Label>Nama</Form.Label>
-                                <Form.Control
-                                    required
-                                    type="text" 
-                                    name="name" 
-                                    value={name}
-                                    onChange={ (e) => setName(e.target.value) }
-                                    placeholder="Masukkan nama penghutang" 
-                            /></Form.Group>
-                            <Form.Group>
-                                <Form.Label>Email</Form.Label>
-                                <Form.Control
-                                    type="email" 
-                                    name="email"
-                                    value={email}
-                                    onChange={ (e) => setEmail(e.target.value) }
-                                    placeholder="Dapat dikosongkan" 
-                            /></Form.Group>
-                            <Form.Group>
-                                <Form.Label>Nomor Telepon</Form.Label>
-                                <Form.Control
-                                    type="number" 
-                                    name="phone_number"
-                                    value={number}
-                                    onChange={ (e) => setNumber(e.target.value) }
-                                    placeholder="Dapat dikosongkan" 
-                            /></Form.Group>
-                            <Form.Group>
-                                <Form.Label>Identitas</Form.Label>
-                                <Form.Control
-                                    type="text" 
-                                    name="identity"
-                                    value={identity}
-                                    onChange={ (e) => setIdentity(e.target.value) }
-                                    placeholder="Dapat dikosongkan" 
-                            /></Form.Group>
-                            <Form.Group>
-                                <Form.Label>Alamat</Form.Label>
-                                <Form.Control
-                                    type="text" 
-                                    name="alamat" 
-                                    value={address}
-                                    onChange={ (e) => setAddress(e.target.value) }
-                                    placeholder="Dapat dikosongkan" 
-                            /></Form.Group>
-                            <Form.Group>
-                                <Form.Label>Catatan</Form.Label>
-                                <Form.Control 
-                                    name="note"
-                                    as="textarea"
-                                    value={note}
-                                    onChange={ (e) => setNote(e.target.value) }
-                                    placeholder="Dapat dikosongkan"
-                                    rows={3}
-                            /></Form.Group>
-                            { !isPending &&
-                                <Button variant="success" type="submit">Simpan</Button>
-                            }
-                            { isPending && 
-                                <Button variant="warning" disabled>Sedang memproses...</Button> 
-                            }
-                        </Form>
-                    }
-
-                    { props.match.params.id && 
-                        
-                        <Form className="bg-white p-3 b-radius-10" onSubmit={ handleEdit  }>
+                    <Form className="bg-white p-3 b-radius-10" onSubmit={ handleSubmit  }>
                         {showError && <Alert variant="warning" onClose={() => setShowError(false)} dismissible> { messageError } </Alert>  }
 
                         <Form.Group>
@@ -280,13 +211,12 @@ const Create = (props) => {
                             <Button variant="warning" disabled>Sedang memproses...</Button> 
                         }
                     </Form>
-                    
-                    }
+    
                     <br />
-                </Container>
+                    </Container>
             </Col>
             </Row>
-        </Col>
+        </>
     )
 }
 

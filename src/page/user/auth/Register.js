@@ -1,5 +1,5 @@
 import Navbar from '../component/Navbar'
-import {  Row, Card, Col, Form } from 'react-bootstrap';
+import {  Row, Card, Col, Form, Spinner, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom'
 import { useState } from 'react'
 
@@ -17,12 +17,16 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [isLoading, setIsLoading] = useState('');
+
     const dispatch = useDispatch();
 
     const history = useHistory();
     
     const submitRegister = (e) => {
         e.preventDefault()
+
+        setIsLoading(true)
 
         axios.post(`${process.env.REACT_APP_API_BASE}/api/register`, {
             'name': name,
@@ -39,7 +43,13 @@ const Register = () => {
             history.push('/user/dashboard')
         })
         .catch(err => {
-            console.error(err.response.data.message)
+            console.log(err.repsonse)
+            // console.error(err.response.data.message)
+        })
+        .finally(() => {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
         })
     }
 
@@ -94,9 +104,22 @@ const Register = () => {
                                                     <Link to="/">Login</Link>
                                                 </div>
                                             </Form.Group>
-                                            <Form.Group className="text-center" controlId="exampleForm.ControlInput1">
-                                                <button className="btn btn-primary">Daftar</button>
-                                            </Form.Group>
+                                            <Col className="text-center">
+                                                { isLoading && 
+                                                    <Button variant="primary" disabled>
+                                                        <Spinner
+                                                        as="span"
+                                                        animation="border"
+                                                        size="sm"
+                                                        role="status"
+                                                        aria-hidden="true"
+                                                        />
+                                                        {' '}Loading
+                                                    </Button> 
+                                                }
+                                                { !isLoading && <Button variant="primary" type="submit">Masuk</Button> }
+
+                                            </Col>
                                         </Form>
                                     </Card.Body>
                                 </Card>

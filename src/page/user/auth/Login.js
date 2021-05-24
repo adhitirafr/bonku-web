@@ -1,11 +1,11 @@
-import Navbar from '../component/Navbar'
-import {  Row, Card, Col, Form, Alert, Button } from 'react-bootstrap';
+import {  Row, Card, Col, Form, Alert, Button, Spinner } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom'
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setAuthToken } from '../../../redux/userAuth'
-
 import axios from 'axios';
+
+import Navbar from '../component/Navbar'
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -13,11 +13,15 @@ const Login = () => {
     const [showError, setShowError] = useState(false)
     const [messageError, setMessageError] = useState('')
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const dispatch = useDispatch();
     const history = useHistory();
 
     const handleLogin = (e) => {
         e.preventDefault();
+
+        setIsLoading(true)
 
         axios.post(`${process.env.REACT_APP_API_BASE}/api/login`, {
             'email': email,
@@ -30,11 +34,17 @@ const Login = () => {
         })
         .then(res => {
             dispatch(setAuthToken(res.data.access_token))
+            
             history.push('/user/dashboard');
         })
         .catch(err => {
             setMessageError(err.response.data.message)
             setShow(true)
+        })
+        .finally(() => {
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 500);
         })
     }
 
@@ -44,8 +54,8 @@ const Login = () => {
 
     return (
         <Col>
-            <Row>
-                <Col className="bg-wheat vh-100">
+            <Row className="vh-100">
+                <Col className="bg-wheat">
                     <Col className="row align-items-center h-100">
                         <Col className="col-6 mx-auto">
                             <Navbar></Navbar>
@@ -68,7 +78,6 @@ const Login = () => {
                                                     type="email" 
                                                     name="email" 
                                                     placeholder="Email"
-                                                    autoComplete="off"
                                                     required
                                                     onChange={ (e) => setEmail(e.target.value) } 
                                                     value={email}        
@@ -88,7 +97,20 @@ const Login = () => {
                                                 </Col>
                                             </Form.Group>
                                             <Col className="text-center">
-                                                <Button variant="success" type="submit">Masuk</Button>
+                                                { isLoading && 
+                                                    <Button variant="primary" disabled>
+                                                        <Spinner
+                                                        as="span"
+                                                        animation="border"
+                                                        size="sm"
+                                                        role="status"
+                                                        aria-hidden="true"
+                                                        />
+                                                        {' '}Loading
+                                                    </Button> 
+                                                }
+                                                { !isLoading && <Button variant="primary" type="submit">Masuk</Button> }
+
                                             </Col>
                                         </Form>
                                     </Card.Body>

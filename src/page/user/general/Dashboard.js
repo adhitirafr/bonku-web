@@ -1,23 +1,31 @@
 import {  Container, Card, Button, Row, Col, Modal, Alert } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
+import { useHistory } from 'react-router-dom';
 import AuthNavbar from './component/AuthNavbar'
 
 import axios from "axios";
+
+import LoadingPage from './component/LoadingPage';
 import { useEffect, useState } from 'react';
 
 const Dashboard = () => {
 
     const [depts, setDepts] = useState({});
 
+    const [finishModal, setFinishModal] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
-    const [pickData, setPickData] = useState({});
+    const [pickData, setPickData] = useState(null);
 
     const [message, setMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false);
 
+    const [loadingPage, setLoadingPage] = useState(true)
+
     const { token } = useSelector( (state) => state.user );
+
+    const history = useHistory();
 
     useEffect(() => {
         const source = axios.CancelToken.source();
@@ -31,9 +39,12 @@ const Dashboard = () => {
                     cancelToken: source.token,
                 })
                 .then(res => {
-                    if(res.data.data.length !== 0) {
-                        setDepts(res.data.data[0])
-                    } else setDepts(res.data.data)
+                    setDepts(res.data.data)
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        setLoadingPage(false)
+                    }, 300)
                 })
             } catch (error) {
                 if (axios.isCancel(error)) { } 
@@ -45,14 +56,21 @@ const Dashboard = () => {
 
         getDepts();
 
-        return function () {
+        return () => {
             source.cancel("Cancelling in cleanup");
         };
     }, [token]);
 
-    const pickDeptData = (data) => {
+    const pickDeptData = (data, action) => {
         setPickData(data)
-        setShowModal(true)
+
+        if(action === 'show') setShowModal(true)
+        else setFinishModal(true)
+        
+    }
+
+    const showEdit = (id) => {
+        history.push('/user/dept/' + id);
     }
 
     const handleFinish = () => {
@@ -67,7 +85,7 @@ const Dashboard = () => {
         })
         .finally(() => {
             setShowAlert(true)
-            setShowModal(false)
+            setFinishModal(false)
 
             setTimeout(() => {
                 setShowAlert(false)
@@ -77,66 +95,75 @@ const Dashboard = () => {
 
     return (
         <>
-            <AuthNavbar></AuthNavbar>
-            <Row>
-                <Col className="col-md-4 bg-dark vh-100"></Col>
-                <Col className="col-md-8 bg-wheat">
+            { loadingPage && <LoadingPage></LoadingPage> }
 
-                <Col className="display-4 mt-3">Dashboard</Col>
-                    <Container fluid className="mt-3">
+            {
+                !loadingPage &&
+                <>
+                    <AuthNavbar></AuthNavbar>
+                    <Row className="vh-100">
+                        <Col className="col-md-4 bg-dark"></Col>
+                        <Col className="col-md-8 bg-wheat">
 
-                        <Row className="mb-4">
-                            <Col>
-                                <Button href="/user/deptor">Penghutang</Button>{' '}
-                                <Button href="/user/dept/create"> Hutang Baru </Button> {' '}
-                            </Col>
-                        </Row>
+                        <Col className="display-4 mt-3">Dashboard</Col>
+                            <Container fluid className="mt-3">
 
-                        {showAlert && <Alert variant="dark" onClose={() => setShowAlert(false)} dismissible> { message } </Alert>  }
-
-                        {/** Bila hutang belum ada, tampilkan */}
-                        
-                        {depts.length === 0 && 
-                            <Row className="mt-4">
-                                <Col>Hore! kamu belum dihutangi.</Col>
-                            </Row>
-                        }
-
-                        {/* Tampilkan daftar penghutang bila ada */}
-                        
-                        {depts.length > 0 && 
-                            <Row>
-                                {depts.map((dept, index) => (
-                                <Col key={index} sm={12} md={6}>
-                                    <Col className="text-dark">
-                                        <Card className="b-radius-20" >
-                                            <Col className="p-2 text-center">
-                                                <Col className="lead mb-3"> {dept.name} </Col>
-                                                <Col className="mb-4 font-size-30"> {dept.original_dept} </Col>
-                                                {
-                                                    dept.dept_until !== '' && 
-                                                    <Col>
-                                                        <Col className="text-muted font-size-11">Batas waktu</Col>
-                                                        <Col>{dept.dept_until}</Col>
-                                                    </Col>
-                                                }
-                                            </Col>
-                                            <Col className="text-center">
-                                                <img alt="check" onClick={ () => pickDeptData(dept) } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> 
-                                            </Col>
-                                        </Card>
+                                <Row className="mb-4">
+                                    <Col>
+                                        <Button href="/user/deptor">Penghutang</Button>{' '}
+                                        <Button href="/user/dept/create"> Hutang Baru </Button> {' '}
                                     </Col>
-                                </Col>
-                                ))
+                                </Row>
 
-                                    }                             
-                            </Row>
-                        }
-                    </Container>
-                </Col>
-            </Row>
+                                {showAlert && <Alert variant="dark" onClose={() => setShowAlert(false)} dismissible> { message } </Alert>  }
 
-            <Modal centered show={showModal} onHide={() => setShowModal(false)}>
+                                {/** Bila hutang belum ada, tampilkan */}
+                                
+                                {depts.length === 0 && 
+                                    <Row className="mt-4">
+                                        <Col>Hore! kamu belum dihutangi.</Col>
+                                    </Row>
+                                }
+
+                                {/* Tampilkan daftar penghutang bila ada */}
+                                
+                                {depts.length > 0 && 
+                                    <Row>
+                                        {depts.map((dept, index) => (
+                                        <Col key={index} sm={12} md={4} className="mb-5">
+                                            <Col className="text-dark">
+                                                <Card className="b-radius-20" >
+                                                    <Col className="p-2 text-center">
+                                                        <Col className="lead mb-3"> {dept.name} </Col>
+                                                        <Col className="mb-4 font-size-30"> {dept.original_dept} </Col>
+                                                        {
+                                                            dept.dept_until !== '' && 
+                                                            <Col>
+                                                                <Col className="text-muted font-size-11">Batas waktu</Col>
+                                                                <Col>{dept.dept_until}</Col>
+                                                            </Col>
+                                                        }
+                                                    </Col>
+                                                    <Col className="text-center">
+                                                        <img alt="check" onClick={ () => showEdit(dept.id) } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> {' '}
+                                                        <img alt="check" onClick={ () => pickDeptData(dept, 'show') } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> {' '}
+                                                        <img alt="check" onClick={ () => pickDeptData(dept, 'finish') } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> 
+                                                    </Col>
+                                                </Card>
+                                            </Col>
+                                        </Col>
+                                        ))
+
+                                        }                             
+                                    </Row>
+                                }
+                            </Container>
+                        </Col>
+                    </Row>
+                </>
+            }
+
+            <Modal centered show={finishModal} onHide={() => setFinishModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
                         Hutang sudah dibayar?
@@ -148,6 +175,48 @@ const Dashboard = () => {
                     <Col className="float-right">
                         <Button onClick={ () => handleFinish() }>Ya</Button>
                     </Col>
+                </Modal.Body>
+            </Modal>
+
+            <Modal centered show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Detail Hutang
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    { pickData && 
+                        <>
+                            <Col className="mb-10">
+                                <Col className="text-secondary">Penghutang</Col>
+                                <Col> { pickData.deptor.name } </Col> 
+                            </Col>
+
+                            <Col className="mb-10">
+                                <Col className="text-secondary">Dibuat tanggal</Col>
+                                <Col> { pickData.created_at } </Col> 
+                            </Col>
+
+                            <Col className="mb-10">
+                                <Col className="text-secondary">Hutang</Col>
+                                <Col> { pickData.original_dept } </Col> 
+                            </Col>
+
+                            { pickData.interest !== '' && 
+                                <Col className="mb-10">
+                                    <Col className="text-secondary">Bunga</Col>
+                                    <Col> { pickData.interest } </Col> 
+                                </Col> 
+                            }
+
+                            { pickData.dept_until !== '' && 
+                                <Col className="mb-10">
+                                    <Col className="text-secondary">Jatuh Tempo</Col>
+                                    <Col> { pickData.dept_until } </Col> 
+                                </Col> 
+                            }
+                        </> 
+                    }
                 </Modal.Body>
             </Modal>
         </>
