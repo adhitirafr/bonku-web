@@ -1,10 +1,7 @@
 import Navbar from '../component/Navbar'
 import {  Row, Card, Col, Form, Spinner, Button } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useState } from 'react'
-
-import { useDispatch } from 'react-redux';
-import { setAuthToken } from '../../../redux/userAuth'
 
 import axios from 'axios';
 
@@ -18,10 +15,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
 
     const [isLoading, setIsLoading] = useState('');
-
-    const dispatch = useDispatch();
-
-    const history = useHistory();
+    const [isRegister, setIsregister] = useState(false);
     
     const submitRegister = (e) => {
         e.preventDefault()
@@ -39,22 +33,20 @@ const Register = () => {
             }
         })
         .then(res => {
-            dispatch(setAuthToken(res.data.access_token))
-            history.push('/user/dashboard')
+            setIsregister(true);
         })
         .catch(err => {
-            console.log(err.repsonse)
-            // console.error(err.response.data.message)
+            console.error(err.response)
         })
         .finally(() => {
             setTimeout(() => {
                 setIsLoading(false);
-            }, 500);
+            }, 300);
         })
     }
 
     return (
-        <div>
+        <>
             <Row>
                 <Col className="bg-wheat vh-100">
                     <div className="row align-items-center h-100">
@@ -63,72 +55,90 @@ const Register = () => {
                         </div>
                     </div>
                 </Col>
-                <Col className="bg-info h-auto">
+
+                <Col className={isRegister ? "h-auto" : "bg-info h-auto"}>
                     <div className="container h-100">
                         <div className="row align-items-center h-100">
                             <div className="col-6 mx-auto">
-                                <Card style={{ width: '18rem' }}>
-                                    <Card.Body>
-                                        <Form onSubmit={ submitRegister }>
-                                            <Form.Group controlId="name">
-                                                <Form.Control 
-                                                    type="text" 
-                                                    name="name" 
-                                                    placeholder="Nama"
-                                                    autoComplete="off"
-                                                    required
-                                                    value={name}
-                                                    onChange={ (e) => setName(e.target.value) }   
-                                            /></Form.Group>
-                                            <Form.Group controlId="email">
-                                                <Form.Control 
-                                                    type="email" 
-                                                    name="email" 
-                                                    placeholder="Email"
-                                                    autoComplete="off"
-                                                    required
-                                                    value={email}
-                                                    onChange={ (e) => setEmail(e.target.value) } 
-                                            /></Form.Group>
-                                            <Form.Group controlId="password">
-                                                <Form.Control 
-                                                    type="password" 
-                                                    name="password"
-                                                    autoComplete="off"
-                                                    value={password}
-                                                    placeholder="password" 
-                                                    onChange={ (e) => setPassword(e.target.value) }
-                                            /></Form.Group>
-                                            <Form.Group className="text-center" controlId="exampleForm.ControlInput1">
-                                                <div>Sudah punya akun?
-                                                    <Link to="/">Login</Link>
-                                                </div>
-                                            </Form.Group>
-                                            <Col className="text-center">
-                                                { isLoading && 
-                                                    <Button variant="primary" disabled>
-                                                        <Spinner
-                                                        as="span"
-                                                        animation="border"
-                                                        size="sm"
-                                                        role="status"
-                                                        aria-hidden="true"
-                                                        />
-                                                        {' '}Loading
-                                                    </Button> 
-                                                }
-                                                { !isLoading && <Button variant="primary" type="submit">Masuk</Button> }
+                                {
+                                    isRegister &&
+                                    <>
+                                        <Col className="text-center">
+                                            <img width="100px" src="/img/email.svg" alt="success email" className="mb-4"/>
 
-                                            </Col>
-                                        </Form>
-                                    </Card.Body>
-                                </Card>
+                                            <Col className="h4">Email verifikasi sudah dikirim!</Col>
+                                            <Col className="mb-4">Silakan cek email masuk mu~</Col>
+
+                                            <Button variant="primary" href="/">Saya sudah konfirmasi</Button>
+                                        </Col>
+                                    </>
+                                }
+
+                                {
+                                    !isRegister &&
+                                    <Card style={{ width: '18rem' }}>
+                                        <Card.Body>
+                                            <Form onSubmit={ submitRegister }>
+                                                <Form.Group controlId="name">
+                                                    <Form.Control 
+                                                        type="text" 
+                                                        name="name" 
+                                                        placeholder="Nama"
+                                                        autoComplete="off"
+                                                        required
+                                                        value={name}
+                                                        onChange={ (e) => setName(e.target.value) }   
+                                                /></Form.Group>
+                                                <Form.Group controlId="email">
+                                                    <Form.Control 
+                                                        type="email" 
+                                                        name="email" 
+                                                        placeholder="Email"
+                                                        autoComplete="off"
+                                                        required
+                                                        value={email}
+                                                        onChange={ (e) => setEmail(e.target.value) } 
+                                                /></Form.Group>
+                                                <Form.Group controlId="password">
+                                                    <Form.Control 
+                                                        type="password" 
+                                                        name="password"
+                                                        autoComplete="off"
+                                                        value={password}
+                                                        placeholder="password" 
+                                                        onChange={ (e) => setPassword(e.target.value) }
+                                                /></Form.Group>
+                                                <Form.Group className="text-center" controlId="exampleForm.ControlInput1">
+                                                    <div>Sudah punya akun?
+                                                        <Link to="/">Login</Link>
+                                                    </div>
+                                                </Form.Group>
+                                                <Col className="text-center">
+                                                    { isLoading && 
+                                                        <Button variant="primary" disabled>
+                                                            <Spinner
+                                                            as="span"
+                                                            animation="border"
+                                                            size="sm"
+                                                            role="status"
+                                                            aria-hidden="true"
+                                                            />
+                                                            {' '}Loading
+                                                        </Button> 
+                                                    }
+                                                    { !isLoading && <Button type="submit" variant="primary">Masuk</Button> }
+
+                                                </Col>
+                                            </Form>
+                                        </Card.Body>
+                                    </Card>
+                                }
                             </div>
                         </div>
                     </div>
                 </Col>
             </Row>
-        </div>
+        </>
     );
 }
 

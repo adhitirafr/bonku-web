@@ -59,7 +59,7 @@ const Dashboard = () => {
         return () => {
             source.cancel("Cancelling in cleanup");
         };
-    }, [token]);
+    }, [token, depts]);
 
     const pickDeptData = (data, action) => {
         setPickData(data)
