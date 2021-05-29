@@ -48,7 +48,6 @@ const Create = (props) => {
                         set_dept_until(res.data.data.dept_until)
                         setNote(res.data.data.note)
                         setInterest(res.data.data.interest)
-                        console.log(res.data.data)
                     })
                     .catch(error => {
 
@@ -74,11 +73,9 @@ const Create = (props) => {
                     } 
                 })
                 .then(res => {
-                    console.log(res.data.data)
                     setDataDeptor(res.data.data)
                 })
                 .catch(err => {
-                    console.error('salah')
                 })
                 .finally(() => {
                     setTimeout(() => {
@@ -124,12 +121,9 @@ const Create = (props) => {
             }
         })
         .then(res => {
-            console.log('berhasil')
             history.push(`/user/dashboard`)
         })
         .catch(err => {
-            console.log(err.response)
-            console.log('salah')
         })
         .finally(() => {
             setIsPeding(false)
@@ -151,12 +145,9 @@ const Create = (props) => {
             }
         })
         .then(res => {
-            console.log('berhasil')
             history.push(`/user/dashboard`)
         })
         .catch(err => {
-            console.log(err.response)
-            console.log('salah')
         })
         .finally(() => {
             setIsPeding(false)

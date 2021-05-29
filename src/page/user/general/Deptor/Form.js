@@ -43,17 +43,13 @@ const Create = (props) => {
                         }
                     })
                     .then(res => {
-                        console.log(res.data.data)
-
                         setName(res.data.data.name)
                         setEmail(res.data.data.email)
                         setIdentity(res.data.data.identity)
                         setNote(res.data.data.note)
                         setAddress(res.data.data.address)
                         setNumber(res.data.data.phone_number)
-                    }).catch(err => {
-                        console.error(err.response)
-                    })
+                    }).catch(err => {})
                 }
                 catch (error) {
                     if (axios.isCancel(error)) { } 

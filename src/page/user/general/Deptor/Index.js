@@ -32,8 +32,6 @@ const ListDeptor = () => {
             setDeptors(res.data.data)
         })
         .catch(err => {
-            console.log('error')
-            console.log(err.response)
         })
     }
 
@@ -47,7 +45,6 @@ const ListDeptor = () => {
             setDeptorData(res.data.data)
             setShowModal(true);
         }).catch(err => {
-            console.error(err.response)
         })
     }
 
@@ -62,20 +59,15 @@ const ListDeptor = () => {
         setDeleteModal(condition)
     }
 
-    const handleDelete = (e) => {
-        console.log('panggil handle')
-        // e.preventDefault();
-        
+    const handleDelete = () => {
         axios.delete(`${process.env.REACT_APP_API_BASE}/api/deptor/${deptorData.id}`, {
             headers: { 
                 Authorization: `Bearer ${token}`,
             }
         })
         .then(res => {
-            console.log('berhasil dihapus')
         })
         .catch(err => {
-            console.error('salah')
         })
         .finally(() => {
             showDeleteModal(false)
@@ -100,8 +92,6 @@ const ListDeptor = () => {
                     setDeptors(res.data.data)
                 })
                 .catch(err => {
-                    console.log('error')
-                    console.log(err.response)
                 })
                 .finally(() => {
                     setTimeout(() => {

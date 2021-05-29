@@ -38,7 +38,7 @@ const AuthNavbar = () => {
                     setUser(res.data);
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    
                 })
             }
             catch(error) {

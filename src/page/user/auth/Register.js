@@ -36,7 +36,7 @@ const Register = () => {
             setIsregister(true);
         })
         .catch(err => {
-            console.error(err.response)
+            
         })
         .finally(() => {
             setTimeout(() => {
