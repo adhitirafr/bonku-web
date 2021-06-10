@@ -1,77 +1,32 @@
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-const port = process.env.PORT || 3000;
-
-const path = require('path');
-
-function resolvePath(dir) {
-    return path.join(__dirname, '..', dir);
-}
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-    mode: 'development',
-    entry: path.resolve(__dirname, './src/index.js'),
-    output: {
-        path: resolvePath('www'),
-        filename: 'app.js',
-        publicPath: '/',
-    },
-    devtool: 'inline-source-map',
-    // target:'node',
-    devServer: {
-        hot: true,
-        open: true,
-        compress: true,
-        port: port,
-        // contentBase: '/www/',
-        // watchOptions: {
-        //     poll: true
-        // },
-        // https: true,
-        // historyApiFallback: true,
-
-        contentBase: '/www/',
-
-    },
-    module: {
-        rules: [
-            {
-                test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader'
-                }
-            },
-            {
-                test: /\.css$/,
-                use: [
-                  'css-loader',
-                ],
-            },
-            {
-                test: /\.(png|svg|jpe?g|gif)$/,
-                use: [{
-                        loader: 'file-loader',
-                        options: {
-                            name: '[path][name].[ext]'
-                        }
-                    }
-                ]
-            },
-        ],
-    },
-    resolve: {
-        extensions: ['*', '.js', '.jsx'],
-    },
-    plugins:[
-        // new HtmlWebpackPlugin({
-        //    template: './src/index.html'
-        // })
-        new HtmlWebpackPlugin({
-            template: "./src/index.html",
-            filename: "./index.html"
-        }),
-
-    ]
-};
+  // Where files should be sent once they are bundled
+ output: {
+   path: path.join(__dirname, '/dist'),
+   filename: 'index.bundle.js'
+ },
+  // webpack 5 comes with devServer which loads in development mode
+ devServer: {
+   port: 3000,
+   watchContentBase: true
+ },
+  // Rules of how webpack will take our files, complie & bundle them for the browser 
+ module: {
+   rules: [
+     {
+       test: /\.(js|jsx)$/,
+       exclude: /nodeModules/,
+       use: {
+         loader: 'babel-loader'
+       }
+     },
+     {
+       test: /\.css$/,
+       use: ['style-loader', 'css-loader']
+     }
+   ]
+ },
+ plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
+}
