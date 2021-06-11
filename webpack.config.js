@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
@@ -25,8 +26,24 @@ module.exports = {
      {
        test: /\.css$/,
        use: ['style-loader', 'css-loader']
-     }
+     },
+     {
+      test: /\.svg$/,
+      use: [
+        {
+          loader: 'svg-url-loader',
+          options: {
+            limit: 10000,
+          },
+        },
+      ],
+    },
    ]
  },
- plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
+ plugins: [
+   new HtmlWebpackPlugin({ template: './src/index.html' }),
+   new webpack.ProvidePlugin({
+    "React": "react",
+ }),
+  ],
 }
