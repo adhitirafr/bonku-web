@@ -78,6 +78,7 @@ const Register = () => {
                                     !isRegister &&
                                     <Card style={{ width: '18rem' }}>
                                         <Card.Body>
+                                            <Col className="text-center font-size-30 mb-10">Register</Col>
                                             <Form onSubmit={ submitRegister }>
                                                 <Form.Group controlId="name">
                                                     <Form.Control 
@@ -126,7 +127,7 @@ const Register = () => {
                                                             {' '}Loading
                                                         </Button> 
                                                     }
-                                                    { !isLoading && <Button type="submit" variant="primary">Masuk</Button> }
+                                                    { !isLoading && <Button type="submit" variant="primary">Daftar</Button> }
 
                                                 </Col>
                                             </Form>
