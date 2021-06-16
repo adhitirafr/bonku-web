@@ -40,12 +40,8 @@ const Login = () => {
         .catch(err => {
             setMessageError(err.response.data.message)
             setShow(true)
-        })
-        .finally(() => {
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 500);
-        })
+            setIsLoading(false)
+        });
     }
 
     const setShow = (condtion) => {
@@ -68,7 +64,6 @@ const Login = () => {
                             <Col className="col-6 mx-auto">
                                 <Card style={{ width: '18rem' }}>
                                     <Card.Body>
-                                    {process.env.REACT_APP_API_BASE}
                                         <Col className="text-center font-size-30 mb-10">Login</Col>
                                         
                                         {showError && <Alert variant="warning" onClose={() => setShow(false)} dismissible> { messageError } </Alert>  }

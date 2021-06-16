@@ -36,13 +36,8 @@ const Register = () => {
             setIsregister(true);
         })
         .catch(err => {
-            
-        })
-        .finally(() => {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 300);
-        })
+            setIsLoading(false);
+        });
     }
 
     return (

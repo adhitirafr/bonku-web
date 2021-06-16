@@ -91,19 +91,14 @@ const Create = (props) => {
         .catch(err => {
             setMessageError(err.response.data.message)
             setShowError(true)
+            setIsPending(false)
             
         })
-        .finally(() => {
-            setIsPending(false)
-        })
-        
     }
 
     //-- Handling saving deptor
 
     const handleCreate = () => {
-        
-
         axios.post(`${process.env.REACT_APP_API_BASE}/api/deptor`, {
             'name': name,
             'email': email,
@@ -122,10 +117,7 @@ const Create = (props) => {
         .catch(err => {
             setMessageError(err.response.data.message)
             setShowError(true)
-            
-        })
-        .finally(() => {
-            setIsPending(false)
+            setIsPending(false)  
         })
     }
 
