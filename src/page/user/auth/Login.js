@@ -40,12 +40,8 @@ const Login = () => {
         .catch(err => {
             setMessageError(err.response.data.message)
             setShow(true)
-        })
-        .finally(() => {
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 500);
-        })
+            setIsLoading(false)
+        });
     }
 
     const setShow = (condtion) => {

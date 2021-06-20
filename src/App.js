@@ -11,8 +11,6 @@ import DeptorList from './page/user/general/Deptor/Index'
 import DeptorForm from './page/user/general/Deptor/Form'
 import DeptForm from './page/user/general/Dept/Form'
 
-require('dotenv').config()
-
 function App() {
     return (
         <Router>

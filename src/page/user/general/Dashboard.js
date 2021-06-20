@@ -12,54 +12,30 @@ import { useEffect, useState } from 'react';
 const Dashboard = () => {
 
     const [depts, setDepts] = useState({});
-
     const [finishModal, setFinishModal] = useState(false);
     const [showModal, setShowModal] = useState(false);
-
     const [pickData, setPickData] = useState(null);
-
     const [message, setMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false);
-
     const [loadingPage, setLoadingPage] = useState(true)
-
     const { token } = useSelector( (state) => state.user );
-
     const history = useHistory();
 
+
     useEffect(() => {
-        const source = axios.CancelToken.source();
-        
-        //-- Fungsi untuk mengambil daftar hutang.
-        
-        const getDepts = async () => {
-            try {
-                await axios.get(`${process.env.REACT_APP_API_BASE}/api/dept`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    cancelToken: source.token,
-                })
-                .then(res => {
-                    setDepts(res.data.data)
-                })
-                .finally(() => {
-                    setTimeout(() => {
-                        setLoadingPage(false)
-                    }, 300)
-                })
-            } catch (error) {
-                if (axios.isCancel(error)) { } 
-                else {
-                    throw error
-                }
-            }
-        }
+        axios.get(`${process.env.REACT_APP_API_BASE}/api/dept`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+            setDepts(res.data.data)
+        })
+        .finally(() => {
+            setTimeout(() => {
+                setLoadingPage(false)
+            }, 300)
+        })
 
-        getDepts();
-
-        return () => {
-            source.cancel("Cancelling in cleanup");
-        };
-    }, [token, depts]);
+    }, [token]);
 
     const pickDeptData = (data, action) => {
         setPickData(data)
@@ -146,8 +122,8 @@ const Dashboard = () => {
                                                     </Col>
                                                     <Col className="text-center">
                                                         <img alt="check" onClick={ () => showEdit(dept.id) } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> {' '}
-                                                        <img alt="check" onClick={ () => pickDeptData(dept, 'show') } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> {' '}
-                                                        <img alt="check" onClick={ () => pickDeptData(dept, 'finish') } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> 
+                                                        <img alt="check" onClick={ () => pickDeptData(dept, 'show') } width="30px" src="https://img.icons8.com/fluent/48/000000/view.png"/> {' '}
+                                                        <img alt="check" onClick={ () => pickDeptData(dept, 'finish') } width="30px" src="https://img.icons8.com/fluent/48/000000/pencil.png"/> 
                                                     </Col>
                                                 </Card>
                                             </Col>
@@ -163,7 +139,7 @@ const Dashboard = () => {
                 </>
             }
 
-            <Modal centered show={finishModal} onHide={() => setFinishModal(false)}>
+            <Modal animation={false} centered show={finishModal} onHide={() => setFinishModal(false)} >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
                         Hutang sudah dibayar?
@@ -178,7 +154,7 @@ const Dashboard = () => {
                 </Modal.Body>
             </Modal>
 
-            <Modal centered show={showModal} onHide={() => setShowModal(false)}>
+            <Modal animation={false} centered show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
                         Detail Hutang

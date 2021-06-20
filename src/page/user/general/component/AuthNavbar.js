@@ -35,10 +35,7 @@ const AuthNavbar = () => {
                     headers: { Authorization: `Bearer ${token}` },
                     cancelToken: source.token,
                 }).then(res => {
-                    setUser(res.data);
-                })
-                .catch(err => {
-                    
+                    setUser(res.data.data);
                 })
             }
             catch(error) {
@@ -71,7 +68,7 @@ const AuthNavbar = () => {
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
                 <Navbar.Text>
-                    Masuk sebagai: {user.name} | <div onClick={ handleLogOut }>Log out</div>
+                    Halo, {user.name} | <span className="text-danger" onClick={ handleLogOut }>Log out</span>
                 </Navbar.Text>
             </Navbar.Collapse>
         </Navbar>

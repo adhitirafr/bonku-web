@@ -11,7 +11,6 @@ const Create = (props) => {
     const[original_dept, set_original_dept] = useState('');
     const[dept_until, set_dept_until] = useState('');
     const[note, setNote] = useState('');
-    const[interest, setInterest] = useState('');
     const[isPending, setIsPeding] =  useState(false)
     const[pageLoading, setPageLoading] = useState(true)
 
@@ -47,7 +46,6 @@ const Create = (props) => {
                         set_original_dept(res.data.data.original_dept)
                         set_dept_until(res.data.data.dept_until)
                         setNote(res.data.data.note)
-                        setInterest(res.data.data.interest)
                     })
                     .catch(error => {
 
@@ -95,7 +93,7 @@ const Create = (props) => {
         return function () {
             source.cancel("Cancelling in cleanup");
         };
-    }, [token, props.match.params.id])
+    }, [props.match.params.id, token])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -112,7 +110,6 @@ const Create = (props) => {
         axios.post(`${process.env.REACT_APP_API_BASE}/api/dept`, {
             'deptor_id': deptorSelected,
             'original_dept': original_dept,
-            'interest': interest,
             'dept_until': dept_until,
             'note': note
         }, {
@@ -120,12 +117,10 @@ const Create = (props) => {
                 Authorization: `Bearer ${token}`,
             }
         })
-        .then(res => {
+        .then(() => {
             history.push(`/user/dashboard`)
         })
-        .catch(err => {
-        })
-        .finally(() => {
+        .catch(() => {
             setIsPeding(false)
         })
     }
@@ -136,7 +131,6 @@ const Create = (props) => {
         axios.put(`${process.env.REACT_APP_API_BASE}/api/dept/${props.match.params.id}`, {
             'deptor_id': deptorSelected,
             'original_dept': original_dept,
-            'interest': interest,
             'dept_until': dept_until,
             'note': note
         }, {
@@ -144,12 +138,10 @@ const Create = (props) => {
                 Authorization: `Bearer ${token}`,
             }
         })
-        .then(res => {
+        .then(() => {
             history.push(`/user/dashboard`)
         })
-        .catch(err => {
-        })
-        .finally(() => {
+        .catch(() => {
             setIsPeding(false)
         })
     }
@@ -205,18 +197,6 @@ const Create = (props) => {
                                             value={dept_until}
                                             onChange={ (e) => set_dept_until(e.target.value) }
                                             placeholder="Besar hutang"
-                                        >
-                                        </Form.Control>
-                                    </Form.Group>
-
-                                    <Form.Group>
-                                        <Form.Label>Bunga</Form.Label>
-                                        <Form.Control
-                                            name="setOriginal"
-                                            type="number"
-                                            value={interest}
-                                            onChange={ (e) => setInterest(e.target.value) }
-                                            placeholder="dapat dikosongkan"
                                         >
                                         </Form.Control>
                                     </Form.Group>
