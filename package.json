@@ -30,7 +30,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "webpack server --mode development --open",
-    "build-prod": "webpack --mode production"
+    "build-prod": "webpack --mode production --config webpack.config.prod.js"
   },
   "eslintConfig": {
     "extends": [
@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.14.5",
+    "mini-css-extract-plugin": "^1.6.0",
     "webpack-cli": "^4.7.2"
   }
 }
