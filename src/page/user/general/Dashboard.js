@@ -121,9 +121,9 @@ const Dashboard = () => {
                                                         }
                                                     </Col>
                                                     <Col className="text-center">
-                                                        <img alt="check" onClick={ () => showEdit(dept.id) } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> {' '}
+                                                        <img alt="check" onClick={ () => showEdit(dept.id) } width="30px" src="https://img.icons8.com/fluent/48/000000/pencil.png"/> {' '}
                                                         <img alt="check" onClick={ () => pickDeptData(dept, 'show') } width="30px" src="https://img.icons8.com/fluent/48/000000/view.png"/> {' '}
-                                                        <img alt="check" onClick={ () => pickDeptData(dept, 'finish') } width="30px" src="https://img.icons8.com/fluent/48/000000/pencil.png"/> 
+                                                        <img alt="check" onClick={ () => pickDeptData(dept, 'finish') } width="30px" src="https://img.icons8.com/emoji/48/000000/check-box-with-check-emoji.png"/> 
                                                     </Col>
                                                 </Card>
                                             </Col>
